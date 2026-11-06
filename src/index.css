@@ -54,3 +54,32 @@
 @utility tnum {
   font-variant-numeric: tabular-nums;
 }
+
+/* 모달이 열려 있는 동안 배경 스크롤 잠금 */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+.sheet[open] {
+  animation: sheet-in 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sheet[open]::backdrop {
+  animation: backdrop-in 0.2s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet[open],
+  .sheet[open]::backdrop {
+    animation: none;
+  }
+}

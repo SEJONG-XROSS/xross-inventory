@@ -61,3 +61,24 @@ export const ChevronDownIcon = (p: IconProps) => (
     <path d="m6 9 6 6 6-6" />
   </svg>
 )
+
+export const MinusIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M5 12h14" />
+  </svg>
+)
+
+export const PlusIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+)
+
+export const SlidersIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" />
+    <circle cx="16" cy="6" r="2" />
+    <circle cx="10" cy="12" r="2" />
+    <circle cx="18" cy="18" r="2" />
+  </svg>
+)

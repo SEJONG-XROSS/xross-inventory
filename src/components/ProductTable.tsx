@@ -4,7 +4,13 @@ import { getStockStatus } from '../lib/stock'
 import { formatDateTime, formatRelative } from '../lib/time'
 import { StatusBadge } from './StatusBadge'
 
-export function ProductTable({ products, now }: { products: Product[]; now: Date }) {
+interface Props {
+  products: Product[]
+  now: Date
+  lowThreshold: number
+}
+
+export function ProductTable({ products, now, lowThreshold }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-white">
       <table className="w-full text-left text-sm">
@@ -18,7 +24,7 @@ export function ProductTable({ products, now }: { products: Product[]; now: Date
         </thead>
         <tbody className="divide-y divide-line">
           {products.map((p) => {
-            const status = getStockStatus(p.quantity)
+            const status = getStockStatus(p.quantity, lowThreshold)
             const meta = STOCK_STATUS_META[status]
             const soldOut = status === 'soldOut'
             return (

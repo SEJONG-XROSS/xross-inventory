@@ -11,8 +11,14 @@ const imageBg = {
   soldOut: 'bg-soldout-soft/60',
 } as const
 
-export function ProductCard({ product, now }: { product: Product; now: Date }) {
-  const status = getStockStatus(product.quantity)
+interface Props {
+  product: Product
+  now: Date
+  lowThreshold: number
+}
+
+export function ProductCard({ product, now, lowThreshold }: Props) {
+  const status = getStockStatus(product.quantity, lowThreshold)
   const meta = STOCK_STATUS_META[status]
   const soldOut = status === 'soldOut'
 

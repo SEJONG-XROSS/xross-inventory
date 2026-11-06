@@ -15,7 +15,8 @@ npm run build    # 프로덕션 빌드 (dist/)
 
 | 경로 | 내용 |
 |---|---|
-| `src/config/stock.ts` | **재고 상태 기준값** (`LOW_STOCK_THRESHOLD`), 상태별 라벨·색상 |
+| `src/config/stock.ts` | **재고 상태 기준값** 기본값·허용 범위, 상태별 라벨·색상 |
+| `src/components/ThresholdSettings.tsx` | 화면에서 부족 기준값을 변경하는 설정 다이얼로그 |
 | `src/data/products.ts` | Mock 상품 데이터 (이미지, 이름, 수량, 업데이트 시각) |
 | `src/lib/stock.ts` | 수량 → 상태 판정, 요약 집계 |
 | `src/components/` | 헤더, 요약 카드, 검색·필터 툴바, 상품 카드/표 |
@@ -25,11 +26,12 @@ npm run build    # 프로덕션 빌드 (dist/)
 
 | 수량 | 상태 |
 |---|---|
-| `LOW_STOCK_THRESHOLD`(기본 10) 이상 | 충분 (초록) |
-| 1 ~ `LOW_STOCK_THRESHOLD - 1` | 부족 (주황) |
+| 부족 기준값(기본 10) 이상 | 충분 (초록) |
+| 1 ~ 기준값 - 1 | 부족 (주황) |
 | 0 | 품절 (빨강) |
 
-기준을 바꾸려면 `src/config/stock.ts`의 `LOW_STOCK_THRESHOLD`만 수정하면 됩니다.
+부족 기준값은 화면 상단의 **기준 설정** 버튼으로 변경할 수 있으며(1~999개), 브라우저 `localStorage`에 저장되어 새로고침 후에도 유지됩니다.
+기본값은 `src/config/stock.ts`의 `DEFAULT_LOW_STOCK_THRESHOLD`에서 바꿀 수 있습니다.
 
 ## 기술 스택
 

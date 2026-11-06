@@ -3,12 +3,14 @@ import { Header } from './components/Header'
 import { ProductCard } from './components/ProductCard'
 import { ProductTable } from './components/ProductTable'
 import { SummaryCards } from './components/SummaryCards'
+import { ThresholdSettings } from './components/ThresholdSettings'
 import { Toolbar } from './components/Toolbar'
 import { BoxIcon } from './components/icons'
-import { LOW_STOCK_THRESHOLD, STOCK_STATUS_META } from './config/stock'
+import { STOCK_STATUS_META } from './config/stock'
 import { STORE_NAME, products } from './data/products'
 import { SORT_LABELS, type SortKey, type StatusFilter, type ViewMode } from './lib/filters'
 import { getStockStatus, summarize } from './lib/stock'
+import { useStockThreshold } from './lib/useStockThreshold'
 
 /** 상대 시간("n분 전")이 갱신되도록 1분마다 현재 시각을 갱신 */
 function useNow(intervalMs = 60_000) {
@@ -33,16 +35,17 @@ export default function App() {
   const [status, setStatus] = useState<StatusFilter>('all')
   const [sort, setSort] = useState<SortKey>('quantityAsc')
   const [view, setView] = useState<ViewMode>('card')
+  const [lowThreshold, setLowThreshold] = useStockThreshold()
 
-  const summary = useMemo(() => summarize(products), [])
+  const summary = useMemo(() => summarize(products, lowThreshold), [lowThreshold])
 
   const visible = useMemo(() => {
     const q = query.trim().replace(/\s+/g, '').toLowerCase()
     return products
-      .filter((p) => status === 'all' || getStockStatus(p.quantity) === status)
+      .filter((p) => status === 'all' || getStockStatus(p.quantity, lowThreshold) === status)
       .filter((p) => !q || p.name.replace(/\s+/g, '').toLowerCase().includes(q))
       .sort(sorters[sort])
-  }, [query, status, sort])
+  }, [query, status, sort, lowThreshold])
 
   const latestUpdate = useMemo(
     () => new Date(Math.max(...products.map((p) => p.updatedAt.getTime()))),
@@ -69,15 +72,23 @@ export default function App() {
           className="pointer-events-none absolute -bottom-48 left-[-10%] size-[420px] rounded-full bg-violet/20 blur-[120px]"
         />
         <div className="wrap relative">
-          <p className="text-sm font-medium text-sky sm:hidden">{STORE_NAME}</p>
-          <h1 className="mt-1 text-[1.75rem] leading-tight font-bold tracking-[-0.03em] sm:mt-0 md:text-[2.25rem]">
-            아이스크림 재고 현황
-          </h1>
-          <p className="mt-2 text-sm text-haze md:text-[15px]">
-            상품별 재고를 한눈에 확인하세요. 재고가 {LOW_STOCK_THRESHOLD}개 미만이면{' '}
-            <span className="font-semibold text-low">{STOCK_STATUS_META.low.label}</span>, 0개이면{' '}
-            <span className="font-semibold text-soldout">{STOCK_STATUS_META.soldOut.label}</span>로 표시됩니다.
-          </p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-sky sm:hidden">{STORE_NAME}</p>
+              <h1 className="mt-1 text-[1.75rem] leading-tight font-bold tracking-[-0.03em] sm:mt-0 md:text-[2.25rem]">
+                아이스크림 재고 현황
+              </h1>
+              <p className="mt-2 text-sm text-haze md:text-[15px]">
+                상품별 재고를 한눈에 확인하세요. 재고가{' '}
+                <span className="tnum font-semibold text-white">{lowThreshold}개</span> 미만이면{' '}
+                <span className="font-semibold text-low">{STOCK_STATUS_META.low.label}</span>, 0개이면{' '}
+                <span className="font-semibold text-soldout">{STOCK_STATUS_META.soldOut.label}</span>로 표시됩니다.
+              </p>
+            </div>
+            <div className="self-start sm:self-auto">
+              <ThresholdSettings threshold={lowThreshold} onChange={setLowThreshold} products={products} />
+            </div>
+          </div>
           <div className="mt-7 md:mt-9">
             <SummaryCards summary={summary} active={status} onSelect={setStatus} />
           </div>
@@ -128,12 +139,12 @@ export default function App() {
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
             {visible.map((p) => (
               <li key={p.id} className="flex">
-                <ProductCard product={p} now={now} />
+                <ProductCard product={p} now={now} lowThreshold={lowThreshold} />
               </li>
             ))}
           </ul>
         ) : (
-          <ProductTable products={visible} now={now} />
+          <ProductTable products={visible} now={now} lowThreshold={lowThreshold} />
         )}
       </main>
 
