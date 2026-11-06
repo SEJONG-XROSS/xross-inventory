@@ -1,0 +1,56 @@
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+    'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+
+  /* XROSS 브랜드 팔레트 (xross-landing 기준) */
+  --color-ink: #081229;
+  --color-ink-2: #0e1c3d;
+  --color-ink-3: #1a2b57;
+  --color-signal: #1f5bff;
+  --color-signal-hover: #3b6fff;
+  --color-sky: #3aa8ff;
+  --color-violet: #5b34e8;
+  --color-paper: #f2f5fb;
+  --color-line: #dce3f0;
+  --color-muted: #56627d;
+  --color-haze: #9aa8c7;
+
+  /* 재고 상태 색상 */
+  --color-enough: #16a34a;
+  --color-enough-soft: #e7f6ec;
+  --color-enough-ink: #0d7a37;
+  --color-low: #f59e0b;
+  --color-low-soft: #fff3dd;
+  --color-low-ink: #9a5b00;
+  --color-soldout: #f04438;
+  --color-soldout-soft: #fdeceb;
+  --color-soldout-ink: #c4261b;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-paper font-sans text-ink;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
